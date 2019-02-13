@@ -27,6 +27,7 @@ struct TGPS
 	float Pressure;
 	float BoardCurrent;
 	int DS18B20Count;
+	int cps;
 
 	// Flight control
 	TFlightMode FlightMode;

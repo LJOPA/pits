@@ -54,6 +54,7 @@
 #include "pipe.h"
 #include "prediction.h"
 #include "log.h"
+#include "geiger.h"
 #ifdef EXTRAS_PRESENT
 #	include "ex_tracker.h"
 #endif	
@@ -649,7 +650,7 @@ int main(void)
 	unsigned char Sentence[200];
 	struct stat st = {0};
 	struct TGPS GPS;
-	pthread_t PredictionThread, LoRaThread, APRSThread, GPSThread, DS18B20Thread, ADCThread, CameraThread, BMP085Thread, BME280Thread, MS5611Thread, LEDThread, LogThread, PipeThread;
+	pthread_t PredictionThread, LoRaThread, APRSThread, GPSThread, DS18B20Thread, ADCThread, CameraThread, BMP085Thread, BME280Thread, MS5611Thread, LEDThread, LogThread, PipeThread, GeigerThread;
 	if (prog_count("tracker") > 1)
 	
 	{
@@ -975,7 +976,12 @@ int main(void)
 		{
 			fprintf(stderr, "Error creating prediction thread\n");
 		}
-	}	
+	}
+	
+	if (pthread_create(&GeigerThread, NULL, GeigerLoop, &GPS)) {
+		fprintf(stderr, "Error creating Geiger thread\n");
+		return 1;
+	}
 	
 #	ifdef EXTRAS_PRESENT
 		tracker_load_threads(&GPS);
